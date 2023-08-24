@@ -5,8 +5,9 @@ function playSound(key) {
 
   if (!key || !audio) return;
 
-  key.classList.add("playing");
+  audio.currentTime = 0;
   audio.play();
+  key.classList.add("playing");
 }
 
 function removeTransition(e) {
