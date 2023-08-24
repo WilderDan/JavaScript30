@@ -1,33 +1,32 @@
-const sounds = document.querySelectorAll("audio");
-const keys = document.querySelectorAll(".key");
+function playSound(key) {
+  const audio = document.querySelector(
+    `audio[data-key="${key.getAttribute("data-key")}"]`
+  );
 
-sounds.forEach((audio) => {
-  audio.addEventListener("ended", () => {
-    const key = document.querySelector(
-      `div[data-key="${audio.getAttribute("data-key")}"`
-    );
+  if (!key || !audio) return;
 
-    key.classList.remove("playing");
-  });
-});
+  key.classList.add("playing");
+  audio.play();
+}
 
-keys.forEach((key) => {
-  key.addEventListener("click", () => {
-    const audio = document.querySelector(
-      `audio[data-key="${key.getAttribute("data-key")}"]`
-    );
+function removeTransition(e) {
+  if (e.propertyName !== "transform") return;
+  e.target.classList.remove("playing");
+}
 
-    key.classList.add("playing");
-    audio.play();
-  });
-});
-
-window.addEventListener("keydown", (e) => {
-  const audio = document.querySelector(`audio[data-key="${e.code}"]`);
+function handleKeyDown(e) {
   const key = document.querySelector(`div[data-key="${e.code}"]`);
+  if (key) playSound(key);
+}
 
-  if (audio && key) {
-    key.classList.add("playing");
-    audio.play();
-  }
+function handleClick(e) {
+  playSound(e.currentTarget);
+}
+
+window.addEventListener("keydown", handleKeyDown);
+
+const keys = document.querySelectorAll(".key");
+keys.forEach((key) => {
+  key.addEventListener("click", handleClick);
+  key.addEventListener("transitionend", removeTransition);
 });
